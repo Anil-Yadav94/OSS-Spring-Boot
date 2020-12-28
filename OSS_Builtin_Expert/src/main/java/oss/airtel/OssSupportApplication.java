@@ -12,7 +12,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @SpringBootApplication
 @EnableCaching
 @EnableAsync
-public class OssBuiltinExpertApplication {
+public class OssSupportApplication {
 	
 	@Bean(name = "asyncExecutor")
 	public Executor asyncExecutor() {
@@ -26,7 +26,7 @@ public class OssBuiltinExpertApplication {
 	}
 
 	public static void main(String[] args) {
-		SpringApplication.run(OssBuiltinExpertApplication.class, args);
+		SpringApplication.run(OssSupportApplication.class, args);
 	}
 
 }

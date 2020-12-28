@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>oss.airtel</groupId>
-	<artifactId>OSS_Builtin_Expert</artifactId>
+	<artifactId>OSS_Support</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>OSS_Builtin_Expert</name>
-	<description>OSS_Builtin_Expert Project for Spring Boot</description>
+	<name>OSS_Support</name>
+	<description>OSS_Support Project on Spring Boot</description>
 
 	<properties>
 		<java.version>1.8</java.version>
