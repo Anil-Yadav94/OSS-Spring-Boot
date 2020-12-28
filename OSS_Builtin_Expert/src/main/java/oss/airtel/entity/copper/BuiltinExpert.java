@@ -1,6 +1,8 @@
-package oss.airtel.entity;
+package oss.airtel.entity.copper;
 
 import java.util.HashMap;
+
+import oss.airtel.service.copper.Expert;
 
 public class BuiltinExpert {
 

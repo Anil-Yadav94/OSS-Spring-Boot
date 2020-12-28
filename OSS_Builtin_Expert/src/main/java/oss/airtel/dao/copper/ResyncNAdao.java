@@ -1,4 +1,4 @@
-package oss.airtel.dao;
+package oss.airtel.dao.copper;
 
 public interface ResyncNAdao {
 

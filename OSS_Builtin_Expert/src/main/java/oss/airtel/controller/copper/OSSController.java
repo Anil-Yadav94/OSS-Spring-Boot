@@ -1,4 +1,4 @@
-package oss.airtel.controller;
+package oss.airtel.controller.copper;
 
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import oss.airtel.entity.Builtin;
-import oss.airtel.entity.BuiltinExpert;
-import oss.airtel.entity.Expert;
-import oss.airtel.service.OSSService;
+import oss.airtel.entity.copper.Builtin;
+import oss.airtel.entity.copper.BuiltinExpert;
+import oss.airtel.service.copper.Expert;
+import oss.airtel.service.copper.OSSService;
 import oss.airtel.util.CustomException;
 
 @RestController

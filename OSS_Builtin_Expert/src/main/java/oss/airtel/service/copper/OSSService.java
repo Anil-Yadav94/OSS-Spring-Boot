@@ -1,4 +1,4 @@
-package oss.airtel.service;
+package oss.airtel.service.copper;
 
 import java.io.StringReader;
 import java.text.DecimalFormat;
@@ -17,9 +17,8 @@ import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
 import oss.airtel.component.NAconnect;
-import oss.airtel.dao.ResyncNAdao;
-import oss.airtel.entity.Builtin;
-import oss.airtel.entity.Expert;
+import oss.airtel.dao.copper.ResyncNAdao;
+import oss.airtel.entity.copper.Builtin;
 
 @Service
 public class OSSService {

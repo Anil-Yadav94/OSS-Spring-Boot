@@ -1,4 +1,4 @@
-package oss.airtel.entity;
+package oss.airtel.entity.copper;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
