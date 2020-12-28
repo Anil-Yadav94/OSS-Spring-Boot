@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import oss.airtel.entity.copper.Builtin;
 import oss.airtel.entity.copper.BuiltinExpert;
-import oss.airtel.service.copper.Expert;
+import oss.airtel.entity.copper.Expert;
 import oss.airtel.service.copper.OSSService;
 import oss.airtel.util.CustomException;
 
 @RestController
-@RequestMapping("/hnv/oss")
+@RequestMapping("/hnv/oss_support")
 public class OSSController {
 	private static Logger log = LoggerFactory.getLogger(OSSController.class);
 	@Autowired

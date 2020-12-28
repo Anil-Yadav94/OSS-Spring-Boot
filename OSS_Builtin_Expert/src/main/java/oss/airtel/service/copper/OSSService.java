@@ -19,6 +19,7 @@ import org.xml.sax.InputSource;
 import oss.airtel.component.NAconnect;
 import oss.airtel.dao.copper.ResyncNAdao;
 import oss.airtel.entity.copper.Builtin;
+import oss.airtel.entity.copper.Expert;
 
 @Service
 public class OSSService {
