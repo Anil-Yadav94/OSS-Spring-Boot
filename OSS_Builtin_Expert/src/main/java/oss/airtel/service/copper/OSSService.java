@@ -10,6 +10,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
@@ -20,6 +21,7 @@ import oss.airtel.component.NAconnect;
 import oss.airtel.dao.copper.ResyncNAdao;
 import oss.airtel.entity.copper.Builtin;
 import oss.airtel.entity.copper.Expert;
+import oss.airtel.entity.copper.Selt;
 
 @Service
 public class OSSService {
@@ -31,17 +33,22 @@ public class OSSService {
 //	NAconnect nAconnect;
 	
 	@Async("asyncExecutor")
+	@Cacheable(value="BuiltinCache", key="#xmlBuiltin", sync = true)//, unless = "#result==null"
 	public CompletableFuture<Builtin> getBuilinXMLResult(String dslid, String xmlBuiltin)
 	{
+		log.info("getBuilinXMLResult Method Start...");
 		Builtin builtin=new Builtin();
 
 		String resyncCount="NA"; 
-		resyncCount=getResync(dslid);
+		if(dslid!=null)
+		{
+			resyncCount=getResync(dslid);
+		}
 		builtin.setResynchronizationTimes(resyncCount);
 		
 		//Builtin Start
 		String output=NAconnect.runXMLHttps(xmlBuiltin);
-		log.info(dslid+": getBuilinXMLResult: "+output);
+		log.info("getBuilinXMLResult: "+output);
 		
 		if(output.contains("ErrorStatus: "))
 	    {
@@ -71,18 +78,20 @@ public class OSSService {
 			    }
 			    
 			} catch (Exception e) {
-				log.info(dslid+": Builtin Result Parsing error: "+e.getMessage());
+				log.info("Builtin Result Parsing error: "+e.getMessage());
 			}
 	    }
 		return CompletableFuture.completedFuture(builtin);
 	}
 	
 	@Async("asyncExecutor")
-	public CompletableFuture<Expert> getExpertXMLResult(String dslid, String xmlExpert)
+	@Cacheable(value="ExpertCache", key="#xmlExpert", sync = true)//, unless = "#result==null"
+	public CompletableFuture<Expert> getExpertXMLResult(String xmlExpert)
 	{
+		log.info("getExpertXMLResult Method Start...");
 		Expert expert=new Expert();
 	    String output=NAconnect.runXMLHttps(xmlExpert);
-	    log.info(dslid+": getExpertXMLResult: "+output);
+	    log.info("getExpertXMLResult: "+output);
 	    
 	    if(output.contains("ErrorStatus: "))
 	    {
@@ -144,18 +153,59 @@ public class OSSService {
 						code_violation = Double.parseDouble(df.format(Integer.parseInt(showTimes)/Double.parseDouble(mtbe)));
 						codeViolation = String.valueOf(code_violation);
 					} catch (Exception e) {
-						System.out.println(e.getMessage());
+						log.info(e.getMessage());
 						codeViolation="NA";
 					}
 				}
 				expert.setCodeViolation(codeViolation);
 				 
 			} catch (Exception e) {
-				log.info(dslid+": Expert Result Parsing error: "+e.getMessage());
+				log.info("Expert Result Parsing error: "+e.getMessage());
 			}
 		}
 	    return CompletableFuture.completedFuture(expert);
 	}
+	
+	@Async("asyncExecutor")
+	@Cacheable(value="SeltCache", key="#xmlSelt", sync = true)//, unless = "#result==null"
+	public CompletableFuture<Selt> getSeltXMLResult(String xmlSelt)
+	{
+		log.info("getSeltXMLResult Method Start...");
+		Selt selt=new Selt();
+		String output=NAconnect.runXMLHttps(xmlSelt);
+		log.info("getSeltXMLResult: "+output);
+		
+		if(output.contains("ErrorStatus: "))
+	    {
+			selt.setErrorStatus(output.replace("ErrorStatus: ", ""));
+	    }
+	    else {
+	    	Document doc;
+			Element element;
+		    try 
+		    {
+		    	doc=parseXML(output);
+				element = (Element) doc.getElementsByTagName("faultstring").item(0);
+			    if(element!=null) {
+			    	selt.setFaultstring(element.getTextContent());
+			    }
+			    element = (Element) doc.getElementsByTagName("seltConclusion").item(0);
+			    if(element!=null) {
+			    	selt.setSeltConclusion(element.getTextContent());
+			    }
+			    element = (Element) doc.getElementsByTagName("length").item(0);
+			    if(element!=null) {
+			    	selt.setLinelength(element.getTextContent());
+			    }
+			    
+			} catch (Exception e) {
+				log.info("Selt Result Parsing error: "+e.getMessage());
+			}
+	    }
+		return CompletableFuture.completedFuture(selt);
+	}
+	
+	
 	public Document parseXML(String output) {
 		try 
 		{

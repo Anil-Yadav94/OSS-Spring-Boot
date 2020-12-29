@@ -17,9 +17,9 @@ public class OssSupportApplication {
 	@Bean(name = "asyncExecutor")
 	public Executor asyncExecutor() {
 	    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-	    executor.setCorePoolSize(2);
-	    executor.setMaxPoolSize(2);
-	    executor.setQueueCapacity(500);
+	    executor.setCorePoolSize(200);
+	    executor.setMaxPoolSize(500);
+	    executor.setQueueCapacity(1000);
 	    executor.setThreadNamePrefix("XMLFetchAsyncThread-");
 	    executor.initialize();
 	    return executor;

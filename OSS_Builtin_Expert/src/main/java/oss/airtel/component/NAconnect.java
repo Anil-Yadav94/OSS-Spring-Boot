@@ -38,8 +38,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class NAconnect {
 
-	private static SSLSocket socket = null;
+	//private static SSLSocket socket = null;
 	//private static HttpsURLConnection httpsConn=null;
+	
 	
 	public static String runXMLHttps(String xmldata) 
 	{
@@ -144,12 +145,13 @@ public class NAconnect {
 			
 
 			SSLSocketFactory factory = ctx.getSocketFactory();
-			socket = (SSLSocket) factory.createSocket("10.232.161.137", 10500);
+			SSLSocket socket = (SSLSocket) factory.createSocket("10.232.161.137", 10500);
 			socket.setKeepAlive(true);
 			try {
 				socket.startHandshake();
 			} catch (SSLException e) {
 				e.printStackTrace();
+				socket.close();
 			}
 			
 			String path = "/";
@@ -176,6 +178,8 @@ public class NAconnect {
 				break;
 			}while ((read = is.read(buffer)) != -1); 
 //			System.out.println("Output of builtin:- "+output);
+			socket.close();
+			
 			return output;
 		} 
 		catch (IOException | KeyStoreException | NoSuchAlgorithmException | CertificateException | UnrecoverableKeyException | KeyManagementException e) 
@@ -185,17 +189,17 @@ public class NAconnect {
 			return null;
 		}
 		
-		finally 
-		{
-			if(socket != null) 
-			{
-				try {
-					socket.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
+//		finally 
+//		{
+//			if(socket != null) 
+//			{
+//				try {
+//					socket.close();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		}
 	}
 	
 	private static class SavingTrustManager implements X509TrustManager {
