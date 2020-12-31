@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import oss.airtel.util.ApiError;
-import oss.airtel.util.CustomerException;
-import oss.airtel.util.NAFaultStringException;
-import oss.airtel.util.NAServerException;
+import oss.airtel.Exceptions.ApiError;
+import oss.airtel.Exceptions.CustomerException;
+import oss.airtel.Exceptions.NAFaultStringException;
+import oss.airtel.Exceptions.NAServerException;
 
 
 @RestControllerAdvice

@@ -1,4 +1,4 @@
-package oss.airtel.util;
+package oss.airtel.Exceptions;
 
 import java.time.LocalDateTime;
 

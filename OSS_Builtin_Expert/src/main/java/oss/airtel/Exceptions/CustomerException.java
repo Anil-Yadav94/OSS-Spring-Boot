@@ -1,4 +1,4 @@
-package oss.airtel.util;
+package oss.airtel.Exceptions;
 
 public class CustomerException extends RuntimeException {
 

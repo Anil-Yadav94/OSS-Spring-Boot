@@ -17,14 +17,14 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
+import oss.airtel.Exceptions.CustomerException;
+import oss.airtel.Exceptions.NAFaultStringException;
+import oss.airtel.Exceptions.NAServerException;
 import oss.airtel.component.NAconnect;
 import oss.airtel.dao.copper.ResyncNAdao;
 import oss.airtel.entity.copper.Builtin;
 import oss.airtel.entity.copper.Expert;
 import oss.airtel.entity.copper.Selt;
-import oss.airtel.util.CustomerException;
-import oss.airtel.util.NAFaultStringException;
-import oss.airtel.util.NAServerException;
 
 @Service
 public class OSSService {
