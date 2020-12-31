@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +17,11 @@ import oss.airtel.entity.copper.Builtin;
 import oss.airtel.entity.copper.Expert;
 import oss.airtel.entity.copper.Selt;
 import oss.airtel.service.copper.OSSService;
-import oss.airtel.util.CustomException;
 
 @RestController
 @RequestMapping("/hnv/oss_support")
 public class OSSController {
-	private static Logger log = LoggerFactory.getLogger(OSSController.class);
+	//private static Logger log = LoggerFactory.getLogger(OSSController.class);
 	@Autowired
 	OSSService ossservice;
 
@@ -50,12 +47,6 @@ public class OSSController {
 			e.printStackTrace();
 		}
 		output.put("builtin",builtin);
-		if(builtin.getErrorStatus()!=null)
-		{
-			log.info(builtin.getErrorStatus()+": Data is not found for " +dslid);
-			throw new CustomException(builtin.getErrorStatus().replace("URL: https://10.232.161.137:10500/", "") +dslid);
-		}
-		
 	    return ResponseEntity.status(HttpStatus.OK).body(output);
 	}
 	
@@ -80,12 +71,6 @@ public class OSSController {
 			e.printStackTrace();
 		}
 		output.put("expert",expert);
-		if(expert.getErrorStatus()!=null)
-		{
-			log.info(expert.getErrorStatus()+": Data is not found for " +dslid);
-			throw new CustomException(expert.getErrorStatus().replace("URL: https://10.232.161.137:10500/", "") +dslid);
-		}
-		
 	    return ResponseEntity.status(HttpStatus.OK).body(output);
 	}
 	
@@ -110,12 +95,6 @@ public class OSSController {
 			e.printStackTrace();
 		}
 		output.put("selt",selt);
-		if(selt.getErrorStatus()!=null)
-		{
-			log.info(selt.getErrorStatus()+": Data is not found for " +dslid);
-			throw new CustomException(selt.getErrorStatus().replace("URL: https://10.232.161.137:10500/", "") +dslid);
-		}
-		
 	    return ResponseEntity.status(HttpStatus.OK).body(output);
 	}
 	
@@ -151,12 +130,6 @@ public class OSSController {
 			e.printStackTrace();
 		}
 		output.put("expert",expert);
-		
-		if(builtin.getErrorStatus()!=null || expert.getErrorStatus()!=null)
-		{
-			log.info(builtin.getErrorStatus()+": Data is not found for " +dslid);
-			throw new CustomException(builtin.getErrorStatus().replace("URL: https://10.232.161.137:10500/", "") +dslid);
-		}
 		return ResponseEntity.status(HttpStatus.OK).body(output);
 	}
 	
@@ -192,12 +165,6 @@ public class OSSController {
 			e.printStackTrace();
 		}
 		output.put("selt",selt);
-		
-		if(builtin.getErrorStatus()!=null || selt.getErrorStatus()!=null)
-		{
-			log.info(builtin.getErrorStatus()+": Data is not found for " +dslid);
-			throw new CustomException(builtin.getErrorStatus().replace("URL: https://10.232.161.137:10500/", "") +dslid);
-		}
 		return ResponseEntity.status(HttpStatus.OK).body(output);
 	}
 	
@@ -228,12 +195,6 @@ public class OSSController {
 			e.printStackTrace();
 		}
 		output.put("builtin", builtin);
-		
-		if(builtin.getErrorStatus()!=null)
-		{
-			log.info(builtin.getErrorStatus()+": Data is not found");
-			throw new CustomException(builtin.getErrorStatus().replace("URL: https://10.232.161.137:10500/", ""));
-		}
 		return ResponseEntity.status(HttpStatus.OK).body(output);
 
 	}
@@ -262,12 +223,6 @@ public class OSSController {
 			e.printStackTrace();
 		}
 		output.put("expert", expert);
-		
-		if(expert.getErrorStatus()!=null)
-		{
-			log.info(expert.getErrorStatus()+": Data is not found");
-			throw new CustomException(expert.getErrorStatus().replace("URL: https://10.232.161.137:10500/", ""));
-		}
 		return ResponseEntity.status(HttpStatus.OK).body(output);
 
 	}
@@ -296,12 +251,6 @@ public class OSSController {
 			e.printStackTrace();
 		}
 		output.put("selt", selt);
-		
-		if(selt.getErrorStatus()!=null)
-		{
-			log.info(selt.getErrorStatus()+": Data is not found");
-			throw new CustomException(selt.getErrorStatus().replace("URL: https://10.232.161.137:10500/", ""));
-		}
 		return ResponseEntity.status(HttpStatus.OK).body(output);
 
 	}
@@ -341,12 +290,6 @@ public class OSSController {
 			e.printStackTrace();
 		}
 		output.put("expert", expert);
-		
-		if(builtin.getErrorStatus()!=null || expert.getErrorStatus()!=null)
-		{
-			log.info(builtin.getErrorStatus()+": Data is not found");
-			throw new CustomException(builtin.getErrorStatus().replace("URL: https://10.232.161.137:10500/", ""));
-		}
 		return ResponseEntity.status(HttpStatus.OK).body(output);
 
 	}
@@ -386,12 +329,6 @@ public class OSSController {
 			e.printStackTrace();
 		}
 		output.put("selt", selt);
-		
-		if(builtin.getErrorStatus()!=null || selt.getErrorStatus()!=null)
-		{
-			log.info(builtin.getErrorStatus()+": Data is not found");
-			throw new CustomException(builtin.getErrorStatus().replace("URL: https://10.232.161.137:10500/", ""));
-		}
 		return ResponseEntity.status(HttpStatus.OK).body(output);
 	}
 	
@@ -431,12 +368,6 @@ public class OSSController {
 			e.printStackTrace();
 		}
 		output.put("expert", expert);
-		
-		if(builtin.getErrorStatus()!=null || expert.getErrorStatus()!=null)
-		{
-			log.info(builtin.getErrorStatus()+": Data is not found for " +dslid);
-			throw new CustomException(builtin.getErrorStatus().replace("URL: https://10.232.161.137:10500/", "") +dslid);
-		}
 		return ResponseEntity.status(HttpStatus.OK).body(output);
 
 	}

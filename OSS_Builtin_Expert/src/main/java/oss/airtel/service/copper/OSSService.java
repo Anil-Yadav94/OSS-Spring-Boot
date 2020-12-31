@@ -22,6 +22,9 @@ import oss.airtel.dao.copper.ResyncNAdao;
 import oss.airtel.entity.copper.Builtin;
 import oss.airtel.entity.copper.Expert;
 import oss.airtel.entity.copper.Selt;
+import oss.airtel.util.CustomerException;
+import oss.airtel.util.NAFaultStringException;
+import oss.airtel.util.NAServerException;
 
 @Service
 public class OSSService {
@@ -52,7 +55,13 @@ public class OSSService {
 		
 		if(output.contains("ErrorStatus: "))
 	    {
-	    	builtin.setErrorStatus(output.replace("ErrorStatus: ", ""));
+			if(output.contains("Server returned HTTP response code: 500"))
+	    	{
+	    		throw new CustomerException(output.replace("ErrorStatus: ", "").replace(" for URL: https://10.232.161.137:10500/", ""));
+	    	}
+	    	else {
+	    		throw new NAServerException(output.replace("ErrorStatus: ", ""));
+			}
 	    }
 	    else {
 	    	Document doc;
@@ -60,10 +69,17 @@ public class OSSService {
 		    try 
 		    {
 		    	doc=parseXML(output);
-				element = (Element) doc.getElementsByTagName("faultstring").item(0);
+		    	String fault="XYZ";
+			    element = (Element) doc.getElementsByTagName("faultstring").item(0);
 			    if(element!=null) {
+			    	fault=element.getTextContent();
 			    	builtin.setFaultstring(element.getTextContent());
 			    }
+			    //FaultString Handler
+			    if (fault.contains("The entered parameter is invalid.") || fault.contains("The customer ID does not exist.") || fault.contains("The collected data is insufficient.") || fault.contains("Failed to collect data.")) {
+					throw new NAFaultStringException(fault);
+				}
+			    /////
 			    element = (Element) doc.getElementsByTagName("testConclusion").item(0);
 			    if(element!=null) {
 			    	builtin.setTestConclusion(element.getTextContent());
@@ -95,7 +111,13 @@ public class OSSService {
 	    
 	    if(output.contains("ErrorStatus: "))
 	    {
-	    	expert.setErrorStatus(output.replace("ErrorStatus: ", ""));
+	    	if(output.contains("Server returned HTTP response code: 500"))
+	    	{
+	    		throw new CustomerException(output.replace("ErrorStatus: ", "").replace(" for URL: https://10.232.161.137:10500/", ""));
+	    	}
+	    	else {
+	    		throw new NAServerException(output.replace("ErrorStatus: ", ""));
+			}
 	    }
 	    else {
 	    	Document doc;
@@ -123,11 +145,17 @@ public class OSSService {
 			    if(element!=null) {
 			    	expert.setSuggestion(element.getTextContent());
 			    }
+			    String fault="XYZ";
 			    element = (Element) doc.getElementsByTagName("faultstring").item(0);
 			    if(element!=null) {
+			    	fault=element.getTextContent();
 			    	expert.setFaultstring(element.getTextContent());
 			    }
-			    
+			  //FaultString Handler
+			    if (fault.contains("The entered parameter is invalid.") || fault.contains("The customer ID does not exist.") || fault.contains("The collected data is insufficient.") || fault.contains("Failed to collect data.")) {
+					throw new NAFaultStringException(fault);
+				}
+			    /////
 			    String showTimes=null;
 			    String mtbe=null;
 			    
@@ -177,7 +205,13 @@ public class OSSService {
 		
 		if(output.contains("ErrorStatus: "))
 	    {
-			selt.setErrorStatus(output.replace("ErrorStatus: ", ""));
+	    	if(output.contains("Server returned HTTP response code: 500"))
+	    	{
+	    		throw new CustomerException(output.replace("ErrorStatus: ", "").replace(" for URL: https://10.232.161.137:10500/", ""));
+	    	}
+	    	else {
+	    		throw new NAServerException(output.replace("ErrorStatus: ", ""));
+			}
 	    }
 	    else {
 	    	Document doc;
@@ -185,10 +219,17 @@ public class OSSService {
 		    try 
 		    {
 		    	doc=parseXML(output);
-				element = (Element) doc.getElementsByTagName("faultstring").item(0);
+		    	String fault="XYZ";
+			    element = (Element) doc.getElementsByTagName("faultstring").item(0);
 			    if(element!=null) {
+			    	fault=element.getTextContent();
 			    	selt.setFaultstring(element.getTextContent());
 			    }
+			    //FaultString Handler
+			    if (fault.contains("The entered parameter is invalid.") || fault.contains("The customer ID does not exist.") || fault.contains("The collected data is insufficient.") || fault.contains("Failed to collect data.")) {
+					throw new NAFaultStringException(fault);
+				}
+			    /////
 			    element = (Element) doc.getElementsByTagName("seltConclusion").item(0);
 			    if(element!=null) {
 			    	selt.setSeltConclusion(element.getTextContent());
@@ -201,6 +242,7 @@ public class OSSService {
 			} catch (Exception e) {
 				log.info("Selt Result Parsing error: "+e.getMessage());
 			}
+		    
 	    }
 		return CompletableFuture.completedFuture(selt);
 	}

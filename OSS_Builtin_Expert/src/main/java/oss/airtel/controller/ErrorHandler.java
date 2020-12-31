@@ -10,7 +10,9 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import oss.airtel.util.ApiError;
-import oss.airtel.util.CustomException;
+import oss.airtel.util.CustomerException;
+import oss.airtel.util.NAFaultStringException;
+import oss.airtel.util.NAServerException;
 
 
 @RestControllerAdvice
@@ -26,10 +28,23 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
 	       return new ResponseEntity<>(apiError, apiError.getStatus());
 	   }
 	   
-	   @ExceptionHandler(CustomException.class)
-	   public ResponseEntity<ApiError> customHandleNotFound(Exception ex, WebRequest request) {
+	   @ExceptionHandler(CustomerException.class)
+	   public ResponseEntity<ApiError> customerHandleNotFound(Exception ex, WebRequest request) {
 
 	        ApiError apiError=new ApiError(HttpStatus.BAD_REQUEST, "Kindly Check your input", ex  );
 			return new ResponseEntity<>(apiError, apiError.getStatus());
-	    }
+	   }
+	   
+	   @ExceptionHandler(NAFaultStringException.class)
+	   public ResponseEntity<ApiError> FaultStringFound(Exception ex, WebRequest request) {
+		   ApiError apiError=new ApiError(HttpStatus.NO_CONTENT, "Please try again or check input.", ex  );
+		   return new ResponseEntity<>(apiError, apiError.getStatus());
+	   }
+	   
+	   @ExceptionHandler(NAServerException.class)
+	   public ResponseEntity<ApiError> NASeverHandler(Exception ex, WebRequest request) {
+
+		   ApiError apiError=new ApiError(HttpStatus.REQUEST_TIMEOUT, "Kindly Check NA Service.", ex  );
+		   return new ResponseEntity<>(apiError, apiError.getStatus());
+	   }
 }

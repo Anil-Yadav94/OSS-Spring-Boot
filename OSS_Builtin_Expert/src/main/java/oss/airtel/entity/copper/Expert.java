@@ -1,11 +1,7 @@
 package oss.airtel.entity.copper;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 public class Expert {
 
-	@JsonIgnore
-	private String errorStatus;
 	private String faultstring;
 	private String cause;
 	private String suggestion;
@@ -14,12 +10,6 @@ public class Expert {
 	private String resynchronizationTimesLive;
 	private String codeViolation;
 
-	public String getErrorStatus() {
-		return errorStatus;
-	}
-	public void setErrorStatus(String errorStatus) {
-		this.errorStatus = errorStatus;
-	}
 	public String getFaultstring() {
 		return faultstring;
 	}

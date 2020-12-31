@@ -1,24 +1,13 @@
 package oss.airtel.entity.copper;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 public class Builtin {
 	
-	@JsonIgnore
-	private String errorStatus;
 	private String faultstring;
 	private String testConclusion;
 	private String linelength;
 	private String resynchronizationTimes;
 	private String cpeType;
 	
-	
-	public String getErrorStatus() {
-		return errorStatus;
-	}
-	public void setErrorStatus(String errorStatus) {
-		this.errorStatus = errorStatus;
-	}
 	public String getCpeType() {
 		return cpeType;
 	}

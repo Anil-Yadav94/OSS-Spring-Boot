@@ -1,10 +1,10 @@
 package oss.airtel.util;
 
-public class CustomException extends RuntimeException {
+public class CustomerException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
-	public CustomException(String cause) {
+	public CustomerException(String cause) {
         super(cause);
     }
 }
