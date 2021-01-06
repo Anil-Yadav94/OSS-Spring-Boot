@@ -32,8 +32,8 @@ public class OSSService {
 	@Autowired
 	ResyncNAdao resyncNAdao;
 	
-//	@Autowired
-//	NAconnect nAconnect;
+	@Autowired
+	NAconnect nAconnect;
 	
 	@Async("asyncExecutor")
 	@Cacheable(value="BuiltinCache", key="#xmlBuiltin", sync = true)//, unless = "#result==null"
@@ -50,7 +50,7 @@ public class OSSService {
 		builtin.setResynchronizationTimes(resyncCount);
 		
 		//Builtin Start
-		String output=NAconnect.runXMLHttps(xmlBuiltin);
+		String output=nAconnect.runXMLHttps(xmlBuiltin);
 		log.info("getBuilinXMLResult: "+output);
 		
 		if(output.contains("ErrorStatus: "))
@@ -106,7 +106,7 @@ public class OSSService {
 	{
 		log.info("getExpertXMLResult Method Start...");
 		Expert expert=new Expert();
-	    String output=NAconnect.runXMLHttps(xmlExpert);
+	    String output=nAconnect.runXMLHttps(xmlExpert);
 	    log.info("getExpertXMLResult: "+output);
 	    
 	    if(output.contains("ErrorStatus: "))
@@ -200,7 +200,7 @@ public class OSSService {
 	{
 		log.info("getSeltXMLResult Method Start...");
 		Selt selt=new Selt();
-		String output=NAconnect.runXMLHttps(xmlSelt);
+		String output=nAconnect.runXMLHttps(xmlSelt);
 		log.info("getSeltXMLResult: "+output);
 		
 		if(output.contains("ErrorStatus: "))

@@ -2,6 +2,7 @@ package oss.airtel.controller.copper;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -19,7 +20,7 @@ import oss.airtel.entity.copper.Selt;
 import oss.airtel.service.copper.OSSService;
 
 @RestController
-@RequestMapping("/hnv/oss_support")
+@RequestMapping("/hnv/oss_support/copper")
 public class OSSController {
 	//private static Logger log = LoggerFactory.getLogger(OSSController.class);
 	@Autowired
@@ -99,38 +100,40 @@ public class OSSController {
 	}
 	
 	@GetMapping("/builtin-expert/dslid/{dslid}")
-	public ResponseEntity<Object> getBuiltinExpert(@PathVariable("dslid") String dslid) throws IllegalAccessException
+	public Callable<Object> getBuiltinExpert(@PathVariable("dslid") String dslid) throws IllegalAccessException
 	{
-		Map<String, Object> output = new LinkedHashMap<String, Object>();
+		return () -> {
+			Map<String, Object> output = new LinkedHashMap<String, Object>();
+			
+			LinkedHashMap<String, String> inputs = new LinkedHashMap<>();
+			inputs.put("dslid", dslid);
+		    output.put("inputs", inputs);
+	        
+	        String xmlBuiltin = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:tmf=\"tmf854.v1\" xmlns:intf=\"http://www.huawei.com/n2510/intf\"><soapenv:Header><tmf:MTOSI_Header/></soapenv:Header><soapenv:Body><intf:hostLoopLineTestRequest><linePort><CustomerID>"+dslid+"</CustomerID></linePort><busyControl>No</busyControl></intf:hostLoopLineTestRequest></soapenv:Body></soapenv:Envelope>";
+	        CompletableFuture<Builtin> Futurebuiltin=this.ossservice.getBuilinXMLResult(dslid, xmlBuiltin);
+	        
+	        String xmlExpert = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:tmf=\"tmf854.v1\" xmlns:intf=\"http://www.huawei.com/n2510/intf\"><soapenv:Header><tmf:MTOSI_Header/></soapenv:Header><soapenv:Body><intf:lineDiagnosisRequest><linePort><CustomerID>"+dslid+"</CustomerID></linePort></intf:lineDiagnosisRequest></soapenv:Body></soapenv:Envelope>";
+	        CompletableFuture<Expert> Futureexpert = this.ossservice.getExpertXMLResult(xmlExpert);
+	        CompletableFuture.allOf(Futurebuiltin, Futureexpert).join();
+	        
+	        Builtin builtin=null;
+			try {
+				builtin = Futurebuiltin.get();
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
+			}
+			output.put("builtin",builtin);
+			
+			Expert expert=null;
+			try {
+				expert = Futureexpert.get();
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
+			}
+			output.put("expert",expert);
+			return ResponseEntity.status(HttpStatus.OK).body(output);
+		};
 		
-		LinkedHashMap<String, String> inputs = new LinkedHashMap<>();
-		inputs.put("dslid", dslid);
-	    output.put("inputs", inputs);
-        
-        String xmlBuiltin = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:tmf=\"tmf854.v1\" xmlns:intf=\"http://www.huawei.com/n2510/intf\"><soapenv:Header><tmf:MTOSI_Header/></soapenv:Header><soapenv:Body><intf:hostLoopLineTestRequest><linePort><CustomerID>"+dslid+"</CustomerID></linePort><busyControl>No</busyControl></intf:hostLoopLineTestRequest></soapenv:Body></soapenv:Envelope>";
-        CompletableFuture<Builtin> Futurebuiltin=this.ossservice.getBuilinXMLResult(dslid, xmlBuiltin);
-        
-        String xmlExpert = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:tmf=\"tmf854.v1\" xmlns:intf=\"http://www.huawei.com/n2510/intf\"><soapenv:Header><tmf:MTOSI_Header/></soapenv:Header><soapenv:Body><intf:lineDiagnosisRequest><linePort><CustomerID>"+dslid+"</CustomerID></linePort></intf:lineDiagnosisRequest></soapenv:Body></soapenv:Envelope>";
-        CompletableFuture<Expert> Futureexpert = this.ossservice.getExpertXMLResult(xmlExpert);
-        
-        CompletableFuture.allOf(Futurebuiltin, Futureexpert).join();
-        
-        Builtin builtin=null;
-		try {
-			builtin = Futurebuiltin.get();
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
-		}
-		output.put("builtin",builtin);
-		
-		Expert expert=null;
-		try {
-			expert = Futureexpert.get();
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
-		}
-		output.put("expert",expert);
-		return ResponseEntity.status(HttpStatus.OK).body(output);
 	}
 	
 	@GetMapping("/builtin-selt/dslid/{dslid}")

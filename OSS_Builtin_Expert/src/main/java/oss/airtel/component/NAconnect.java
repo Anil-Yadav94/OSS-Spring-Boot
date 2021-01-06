@@ -3,8 +3,6 @@ package oss.airtel.component;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -32,6 +30,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 
@@ -40,22 +39,26 @@ public class NAconnect {
 
 	//private static SSLSocket socket = null;
 	//private static HttpsURLConnection httpsConn=null;
+	//public final String Files_Path= new ClassPathResource("authorizationFiles/").getFile().getAbsolutePath();
+//	public final String Files_Path= new ClassPathResource("authorizationFiles/").getURI().getPath();
 	
-	
-	public static String runXMLHttps(String xmldata) 
+//	public NAconnect() throws IOException{
+//		
+//	}
+	public String runXMLHttps(String xmldata) 
 	{
 		try
 		{
 			KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-			ks.load(new FileInputStream(new File("src/main/resources/authorizationFiles/client.jks")), "N2510las".toCharArray());
-			
+//			ks.load(new FileInputStream(new File(Files_Path+File.separator+"client.jks")), "N2510las".toCharArray());
+			ks.load(new ClassPathResource("authorizationFiles/client.jks").getInputStream(), "N2510las".toCharArray());
 			KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
 			kmf.init(ks, "N2510las".toCharArray());
 			KeyManager[] keyManager = kmf.getKeyManagers();
 
 			KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-			trustStore.load(new FileInputStream("src/main/resources/authorizationFiles/jssecacerts_copper"), "changeit".toCharArray());
-			
+//			trustStore.load(new FileInputStream(Files_Path+File.separator+"jssecacerts_copper"), "changeit".toCharArray());
+			trustStore.load(new ClassPathResource("authorizationFiles/jssecacerts_copper").getInputStream(), "changeit".toCharArray());
 			
 			TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
 			tmf.init(trustStore);
@@ -120,19 +123,20 @@ public class NAconnect {
 //		}
 	}
 	
-	public static String runXML(String xmldata) 
+	public String runXML(String xmldata) 
 	{
 		try 
 		{
 			KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-			ks.load(new FileInputStream(new File("src/main/resources/authorizationFiles/client.jks")), "N2510las".toCharArray());
+//			ks.load(new FileInputStream(new File(Files_Path+File.separator+"client.jks")), "N2510las".toCharArray());
+			ks.load(new ClassPathResource("authorizationFiles/client.jks").getInputStream(), "N2510las".toCharArray());
 			KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
 			kmf.init(ks, "N2510las".toCharArray());
 			KeyManager[] keyManager = kmf.getKeyManagers();
 
 			KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-			trustStore.load(new FileInputStream("src/main/resources/authorizationFiles/jssecacerts"), "changeit".toCharArray());
-			
+//			trustStore.load(new FileInputStream(Files_Path+File.separator+"jssecacerts"), "changeit".toCharArray());
+			trustStore.load(new ClassPathResource("authorizationFiles/jssecacerts_copper").getInputStream(), "changeit".toCharArray());
 			
 			TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
 			tmf.init(trustStore);

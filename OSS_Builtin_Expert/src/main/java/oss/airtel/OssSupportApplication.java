@@ -17,10 +17,12 @@ public class OssSupportApplication {
 	@Bean(name = "asyncExecutor")
 	public Executor asyncExecutor() {
 	    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-	    executor.setCorePoolSize(200);
+	    executor.setCorePoolSize(250);
 	    executor.setMaxPoolSize(500);
 	    executor.setQueueCapacity(1000);
 	    executor.setThreadNamePrefix("XMLFetchAsyncThread-");
+//	    executor.setAllowCoreThreadTimeOut(true);
+//	    executor.setKeepAliveSeconds(10);
 	    executor.initialize();
 	    return executor;
 	}

@@ -31,7 +31,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
 	   @ExceptionHandler(CustomerException.class)
 	   public ResponseEntity<ApiError> customerHandleNotFound(Exception ex, WebRequest request) {
 
-	        ApiError apiError=new ApiError(HttpStatus.BAD_REQUEST, "Kindly Check your input", ex  );
+	        ApiError apiError=new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, "Please try again or check input.", ex  );
 			return new ResponseEntity<>(apiError, apiError.getStatus());
 	   }
 	   
@@ -47,4 +47,12 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
 		   ApiError apiError=new ApiError(HttpStatus.REQUEST_TIMEOUT, "Kindly Check NA Service.", ex  );
 		   return new ResponseEntity<>(apiError, apiError.getStatus());
 	   }
+	   
+//	   @ExceptionHandler(AsyncRequestTimeoutException.class)
+//	    public final ResponseEntity<Object> handleAsyncRequestTimeoutException(AsyncRequestTimeoutException ex, WebRequest request) {
+//		   ApiError apiError=new ApiError(HttpStatus.REQUEST_TIMEOUT, "Kindly Check NA Service.", ex  );
+//		   return new ResponseEntity<>(apiError, apiError.getStatus());
+//	    }
+
+	   
 }
