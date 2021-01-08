@@ -126,7 +126,7 @@ public class OSSController {
 	        try {
 	        	CompletableFuture.allOf(Futurebuiltin, Futureexpert).join();
 			} catch (Exception e) {
-				System.out.println("Handle here User throw Custom Exception. "+e.getMessage());
+				log.info("Handle here User throw Custom Exception. "+e.getMessage());
 			}
 	        
 	        
@@ -169,21 +169,27 @@ public class OSSController {
         String xmlSelt = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:tmf=\"tmf854.v1\" xmlns:intf=\"http://www.huawei.com/n2510/intf\"><soapenv:Header><tmf:MTOSI_Header/></soapenv:Header><soapenv:Body><intf:lineTestRequest><linePort><CustomerID>"+dslid+"</CustomerID></linePort><testProfile>0.4mm/26AWG</testProfile><!--Optional:--><refTest>?</refTest><!--Optional:--><refDev><!--Optional:--><mdNm>?</mdNm><!--Optional:--><meNm>?</meNm></refDev></intf:lineTestRequest></soapenv:Body></soapenv:Envelope>";
 		CompletableFuture<Selt> Futureselt = this.ossservice.getSeltXMLResult(dslid, xmlSelt);
         
-        CompletableFuture.allOf(Futurebuiltin, Futureselt).join();
+        try {
+        	CompletableFuture.allOf(Futurebuiltin, Futureselt).join();
+		} catch (Exception e) {
+			log.info("Handle here User throw Custom Exception. "+e.getMessage());
+		}
         
         Builtin builtin=null;
 		try {
 			builtin = Futurebuiltin.get();
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
+		} catch (InterruptedException | ExecutionException | NAFaultStringException e) {
+			output.put("builtinFaultString","Unable to get builtin Test Result from NA");
+			//e.printStackTrace();
 		}
 		output.put("builtin",builtin);
 		
 		Selt selt=null;
 		try {
 			selt = Futureselt.get();
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
+		} catch (InterruptedException | ExecutionException | NAFaultStringException e) {
+			output.put("seltFaultString","Unable to get builtin Test Result from NA");
+			//e.printStackTrace();
 		}
 		output.put("selt",selt);
 		log.info(dslid+" - Result: "+ResponseEntity.status(HttpStatus.OK).body(output));
@@ -305,21 +311,26 @@ public class OSSController {
         String xmlExpert="<?xml version=\"1.0\"?><soapenv:Envelope xmlns:intf=\"http://www.huawei.com/n2510/intf\" xmlns:tmf=\"tmf854.v1\" xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"><soapenv:Header><tmf:MTOSI_Header tmf854Version=\"?\" extAuthor=\"?\" extVersion=\"?\"> <tmf:domain>iManager N2510 Line Assurance System</tmf:domain> <tmf:activityName>lineDiagnosis</tmf:activityName> <tmf:msgName>lineDiagnosisAction</tmf:msgName> <tmf:msgType>REQUEST</tmf:msgType> <tmf:senderURI>/lineAssurance/OSS</tmf:senderURI> <tmf:destinationURI>/LineAssuranceService/lineDiagnosisAction</tmf:destinationURI> <tmf:communicationPattern>SimpleResponse</tmf:communicationPattern> <tmf:communicationStyle>MSG</tmf:communicationStyle> </tmf:MTOSI_Header> </soapenv:Header><soapenv:Body><intf:lineDiagnosisRequest><linePort> <CustomerID/> <mdNm/> <meNm>"+ip+"</meNm> <ptpNm>/shelf=0/slot="+slot+"/port="+port+"</ptpNm> </linePort> <lineID/> </intf:lineDiagnosisRequest> </soapenv:Body> </soapenv:Envelope>";
 		CompletableFuture<Expert> Futureexpert = this.ossservice.getExpertXMLResult(input, xmlExpert);
         
-        CompletableFuture.allOf(Futurebuiltin, Futureexpert).join();
-        
+		try {
+        	CompletableFuture.allOf(Futurebuiltin, Futureexpert).join();
+		} catch (Exception e) {
+			log.info("Handle here User throw Custom Exception. "+e.getMessage());
+		}
         Builtin builtin=null;
 		try {
 			builtin = Futurebuiltin.get();
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
+		} catch (InterruptedException | ExecutionException | NAFaultStringException e) {
+			output.put("builtinFaultString","Unable to get builtin Test Result from NA");
+			//e.printStackTrace();
 		}
 		output.put("builtin", builtin);
 		
 		Expert expert=null;
 		try {
 			expert = Futureexpert.get();
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
+		} catch (InterruptedException | ExecutionException | NAFaultStringException e) {
+			output.put("expertFaultString","Unable to get builtin Test Result from NA");
+			//e.printStackTrace();
 		}
 		output.put("expert", expert);
 		log.info(input+" - Result: "+ResponseEntity.status(HttpStatus.OK).body(output));
@@ -347,21 +358,26 @@ public class OSSController {
 		String xmlSelt = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:tmf=\"tmf854.v1\" xmlns:intf=\"http://www.huawei.com/n2510/intf\"><soapenv:Header><tmf:MTOSI_Header extVersion=\"?\" extAuthor=\"?\" tmf854Version=\"?\"><tmf:domain>?</tmf:domain><tmf:activityName>?</tmf:activityName><tmf:msgName>?</tmf:msgName><tmf:msgType>?</tmf:msgType><tmf:payloadVersion>?</tmf:payloadVersion><!--Optional:--><tmf:senderURI>?</tmf:senderURI><!--Optional:--><tmf:destinationURI>?</tmf:destinationURI><!--Optional:--><tmf:replyToURI>?</tmf:replyToURI><!--Optional:--><tmf:originatorURI>?</tmf:originatorURI><!--Optional:--><tmf:failureReplytoURI>?</tmf:failureReplytoURI><!--Optional:--><tmf:operationStatus>?</tmf:operationStatus><!--Optional:--><tmf:correlationId>?</tmf:correlationId><!--Optional:--><tmf:security>?</tmf:security><!--Optional:--><tmf:securityType>?</tmf:securityType><!--Optional:--><tmf:priority>?</tmf:priority><!--Optional:--><tmf:msgSpecificProperties><!--1 or more repetitions:--><tmf:property><tmf:propName>?</tmf:propName><tmf:propValue>?</tmf:propValue></tmf:property></tmf:msgSpecificProperties><tmf:communicationPattern>?</tmf:communicationPattern><tmf:communicationStyle>?</tmf:communicationStyle><!--Optional:--><tmf:requestedBatchSize>?</tmf:requestedBatchSize><!--Optional:--><tmf:batchSequenceNumber>?</tmf:batchSequenceNumber><!--Optional:--><tmf:batchSequenceEndOfReply>?</tmf:batchSequenceEndOfReply><!--Optional:--><tmf:fileLocationURI>?</tmf:fileLocationURI><!--Optional:--><tmf:compressionType>?</tmf:compressionType><!--Optional:--><tmf:packingType>?</tmf:packingType><tmf:timestamp>?</tmf:timestamp><!--Optional:--><tmf:vendorExtensions extAuthor=\"?\" version=\"?\" tmf854Version=\"?\"><!--You may enter ANY elements at this point--></tmf:vendorExtensions></tmf:MTOSI_Header></soapenv:Header><soapenv:Body><intf:lineTestRequest><linePort><meNm>"+ip+"</meNm><!--Optional:--><ptpNm>/shelf=0/slot="+slot+"/port="+port+"</ptpNm></linePort><testProfile>0.4mm/26AWG</testProfile><!--Optional:--><refTest>?</refTest><!--Optional:--><refDev><!--Optional:--><mdNm>?</mdNm><!--Optional:--><meNm>?</meNm></refDev></intf:lineTestRequest></soapenv:Body></soapenv:Envelope>";
 		CompletableFuture<Selt> Futureselt=this.ossservice.getSeltXMLResult(input, xmlSelt);
         
-        CompletableFuture.allOf(Futurebuiltin, Futureselt).join();
-        
+		try {
+        	CompletableFuture.allOf(Futurebuiltin, Futureselt).join();
+		} catch (Exception e) {
+			log.info("Handle here User throw Custom Exception. "+e.getMessage());
+		}
         Builtin builtin=null;
 		try {
 			builtin = Futurebuiltin.get();
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
+		} catch (InterruptedException | ExecutionException | NAFaultStringException e) {
+			output.put("builtinFaultString","Unable to get builtin Test Result from NA");
+			//e.printStackTrace();
 		}
 		output.put("builtin", builtin);
 		
 		Selt selt=null;
 		try {
 			selt = Futureselt.get();
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
+		} catch (InterruptedException | ExecutionException | NAFaultStringException e) {
+			output.put("seltFaultString","Unable to get builtin Test Result from NA");
+			//e.printStackTrace();
 		}
 		output.put("selt", selt);
 		log.info(input+" - Result: "+ResponseEntity.status(HttpStatus.OK).body(output));
@@ -387,21 +403,26 @@ public class OSSController {
         String xmlExpert="<?xml version=\"1.0\"?><soapenv:Envelope xmlns:intf=\"http://www.huawei.com/n2510/intf\" xmlns:tmf=\"tmf854.v1\" xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"><soapenv:Header><tmf:MTOSI_Header tmf854Version=\"?\" extAuthor=\"?\" extVersion=\"?\"> <tmf:domain>iManager N2510 Line Assurance System</tmf:domain> <tmf:activityName>lineDiagnosis</tmf:activityName> <tmf:msgName>lineDiagnosisAction</tmf:msgName> <tmf:msgType>REQUEST</tmf:msgType> <tmf:senderURI>/lineAssurance/OSS</tmf:senderURI> <tmf:destinationURI>/LineAssuranceService/lineDiagnosisAction</tmf:destinationURI> <tmf:communicationPattern>SimpleResponse</tmf:communicationPattern> <tmf:communicationStyle>MSG</tmf:communicationStyle> </tmf:MTOSI_Header> </soapenv:Header><soapenv:Body><intf:lineDiagnosisRequest><linePort> <CustomerID/> <mdNm/> <meNm>"+ip+"</meNm> <ptpNm>/shelf=0/slot="+slot+"/port="+port+"</ptpNm> </linePort> <lineID/> </intf:lineDiagnosisRequest> </soapenv:Body> </soapenv:Envelope>";
 		CompletableFuture<Expert> Futureexpert = this.ossservice.getExpertXMLResult(dslid, xmlExpert);
         
-        CompletableFuture.allOf(Futurebuiltin, Futureexpert).join();
-        
+		try {
+        	CompletableFuture.allOf(Futurebuiltin, Futureexpert).join();
+		} catch (Exception e) {
+			log.info("Handle here User throw Custom Exception. "+e.getMessage());
+		}
         Builtin builtin=null;
 		try {
 			builtin = Futurebuiltin.get();
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
+		} catch (InterruptedException | ExecutionException | NAFaultStringException e) {
+			output.put("builtinFaultString","Unable to get builtin Test Result from NA");
+			//e.printStackTrace();
 		}
 		output.put("builtin", builtin);
 		
 		Expert expert=null;
 		try {
 			expert = Futureexpert.get();
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
+		} catch (InterruptedException | ExecutionException | NAFaultStringException e) {
+			output.put("expertFaultString","Unable to get builtin Test Result from NA");
+			//e.printStackTrace();
 		}
 		output.put("expert", expert);
 		log.info(dslid+" - Result: "+ResponseEntity.status(HttpStatus.OK).body(output));
