@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
@@ -109,7 +108,7 @@ public class NAconnect {
 			}
 			
 			httpsConn.disconnect();
-			Thread.sleep(1000L);
+			Thread.sleep(500L);
 			return sb.toString().trim();
 		} 
 		catch (IOException | KeyStoreException | NoSuchAlgorithmException | CertificateException | UnrecoverableKeyException | KeyManagementException | InterruptedException e) 
@@ -156,6 +155,7 @@ public class NAconnect {
 			} catch (SSLException e) {
 				e.printStackTrace();
 				socket.close();
+				return null;
 			}
 			
 			String path = "/";
@@ -171,22 +171,40 @@ public class NAconnect {
 			// Send data
 			wr.write(xmldata);
 			wr.flush();
-			InputStream is = socket.getInputStream();
-			byte[] buffer = new byte[16384];
-			int read=0;
-			
-			String output;
-			do{
-				output = new String(buffer, 0, read);
-				if (output.contains("</soap:Envelope>"))
-				break;
-			}while ((read = is.read(buffer)) != -1); 
+//			InputStream is = socket.getInputStream();
+//			byte[] buffer = new byte[16384];
+//			int read=0;
+//			
+//			String output;
+//			do{
+//				output = new String(buffer, 0, read);
+//				if (output.contains("</soap:Envelope>"))
+//				break;
+//			}while ((read = is.read(buffer)) != -1); 
 //			System.out.println("Output of builtin:- "+output);
-			socket.close();
 			
-			return output;
+			StringBuffer sb = new StringBuffer();
+			try(BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+				String line;
+				while((line=br.readLine())!=null) 
+				{
+					sb.append(line);
+				}
+				br.close();
+			} catch (Exception e) {
+				System.out.println("BufferedReader InputStream error: "+e.getMessage());
+				socket.close();
+				return "ErrorStatus: "+e.getMessage();
+			}
+			
+			if(socket!=null) {
+			socket.close();
+			}
+			Thread.sleep(500L);
+			String output=sb.toString().trim();
+			return output.substring(output.indexOf("<"));
 		} 
-		catch (IOException | KeyStoreException | NoSuchAlgorithmException | CertificateException | UnrecoverableKeyException | KeyManagementException e) 
+		catch (IOException | KeyStoreException | NoSuchAlgorithmException | CertificateException | UnrecoverableKeyException | KeyManagementException | InterruptedException e) 
 		{
 			//System.out.println(e.getMessage());
 			e.printStackTrace();

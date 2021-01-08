@@ -1,7 +1,10 @@
 package oss.airtel.entity.copper;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Builtin {
 	
+	@JsonIgnore
 	private String faultstring;
 	private String testConclusion;
 	private String linelength;

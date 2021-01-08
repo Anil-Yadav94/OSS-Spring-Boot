@@ -1,7 +1,10 @@
 package oss.airtel.entity.copper;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Expert {
 
+	@JsonIgnore
 	private String faultstring;
 	private String cause;
 	private String suggestion;

@@ -51,6 +51,12 @@ public class ApiError {
 
 	public String getCause() {
 		return cause;
+	}
+
+	@Override
+	public String toString() {
+		return "ApiError [status=" + status + ", timestamp=" + timestamp + ", message=" + message + ", cause=" + cause
+				+ "]";
 	}	   
 	   
 }

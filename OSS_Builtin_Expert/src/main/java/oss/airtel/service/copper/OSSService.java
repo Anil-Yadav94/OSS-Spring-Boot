@@ -17,7 +17,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
-import oss.airtel.Exceptions.CustomerException;
 import oss.airtel.Exceptions.NAFaultStringException;
 import oss.airtel.Exceptions.NAServerException;
 import oss.airtel.component.NAconnect;
@@ -28,7 +27,7 @@ import oss.airtel.entity.copper.Selt;
 
 @Service
 public class OSSService {
-	private static Logger log = LoggerFactory.getLogger(OSSService.class);
+	private static final Logger log = LoggerFactory.getLogger(OSSService.class);
 	@Autowired
 	ResyncNAdao resyncNAdao;
 	
@@ -39,11 +38,11 @@ public class OSSService {
 	@Cacheable(value="BuiltinCache", key="#xmlBuiltin", sync = true)//, unless = "#result==null"
 	public CompletableFuture<Builtin> getBuilinXMLResult(String dslid, String xmlBuiltin)
 	{
-		log.info("getBuilinXMLResult Method Start...");
+		log.info(dslid+" : getBuilinXMLResult Method Start...");
 		Builtin builtin=new Builtin();
 
 		String resyncCount="NA"; 
-		if(dslid!=null)
+		if(!dslid.contains("/"))
 		{
 			resyncCount=getResync(dslid);
 		}
@@ -51,13 +50,13 @@ public class OSSService {
 		
 		//Builtin Start
 		String output=nAconnect.runXMLHttps(xmlBuiltin);
-		log.info("getBuilinXMLResult: "+output);
+		log.info(dslid+" : getBuilinXMLResult: "+output);
 		
 		if(output.contains("ErrorStatus: "))
 	    {
 			if(output.contains("Server returned HTTP response code: 500"))
 	    	{
-	    		throw new CustomerException(output.replace("ErrorStatus: ", "").replace(" for URL: https://10.232.161.137:10500/", ""));
+	    		throw new NAFaultStringException(output.replace("ErrorStatus: ", "").replace(" for URL: https://10.232.161.137:10500/", ""));
 	    	}
 	    	else {
 	    		throw new NAServerException(output.replace("ErrorStatus: ", ""));
@@ -94,7 +93,7 @@ public class OSSService {
 			    }
 			    
 			} catch (Exception e) {
-				log.info("Builtin Result Parsing error: "+e.getMessage());
+				log.info(dslid+" : Builtin Result Parsing error: "+e.getMessage());
 			}
 	    }
 		return CompletableFuture.completedFuture(builtin);
@@ -102,18 +101,18 @@ public class OSSService {
 	
 	@Async("asyncExecutor")
 	@Cacheable(value="ExpertCache", key="#xmlExpert", sync = true)//, unless = "#result==null"
-	public CompletableFuture<Expert> getExpertXMLResult(String xmlExpert)
+	public CompletableFuture<Expert> getExpertXMLResult(String dslid, String xmlExpert)
 	{
-		log.info("getExpertXMLResult Method Start...");
+		log.info(dslid+" : getExpertXMLResult Method Start...");
 		Expert expert=new Expert();
 	    String output=nAconnect.runXMLHttps(xmlExpert);
-	    log.info("getExpertXMLResult: "+output);
+	    log.info(dslid+" : getExpertXMLResult: "+output);
 	    
 	    if(output.contains("ErrorStatus: "))
 	    {
 	    	if(output.contains("Server returned HTTP response code: 500"))
 	    	{
-	    		throw new CustomerException(output.replace("ErrorStatus: ", "").replace(" for URL: https://10.232.161.137:10500/", ""));
+	    		throw new NAFaultStringException(output.replace("ErrorStatus: ", "").replace(" for URL: https://10.232.161.137:10500/", ""));
 	    	}
 	    	else {
 	    		throw new NAServerException(output.replace("ErrorStatus: ", ""));
@@ -188,7 +187,7 @@ public class OSSService {
 				expert.setCodeViolation(codeViolation);
 				 
 			} catch (Exception e) {
-				log.info("Expert Result Parsing error: "+e.getMessage());
+				log.info(dslid+" : Expert Result Parsing error: "+e.getMessage());
 			}
 		}
 	    return CompletableFuture.completedFuture(expert);
@@ -196,18 +195,18 @@ public class OSSService {
 	
 	@Async("asyncExecutor")
 	@Cacheable(value="SeltCache", key="#xmlSelt", sync = true)//, unless = "#result==null"
-	public CompletableFuture<Selt> getSeltXMLResult(String xmlSelt)
+	public CompletableFuture<Selt> getSeltXMLResult(String dslid, String xmlSelt)
 	{
-		log.info("getSeltXMLResult Method Start...");
+		log.info(dslid+" : getSeltXMLResult Method Start...");
 		Selt selt=new Selt();
 		String output=nAconnect.runXMLHttps(xmlSelt);
-		log.info("getSeltXMLResult: "+output);
+		log.info(dslid+" : getSeltXMLResult: "+output);
 		
 		if(output.contains("ErrorStatus: "))
 	    {
 	    	if(output.contains("Server returned HTTP response code: 500"))
 	    	{
-	    		throw new CustomerException(output.replace("ErrorStatus: ", "").replace(" for URL: https://10.232.161.137:10500/", ""));
+	    		throw new NAFaultStringException(output.replace("ErrorStatus: ", "").replace(" for URL: https://10.232.161.137:10500/", ""));
 	    	}
 	    	else {
 	    		throw new NAServerException(output.replace("ErrorStatus: ", ""));
@@ -240,7 +239,7 @@ public class OSSService {
 			    }
 			    
 			} catch (Exception e) {
-				log.info("Selt Result Parsing error: "+e.getMessage());
+				log.info(dslid+" : Selt Result Parsing error: "+e.getMessage());
 			}
 		    
 	    }
@@ -259,7 +258,7 @@ public class OSSService {
 		    return doc;
 		}
 		catch (Exception e) {
-			System.out.println(e.getMessage());
+			log.info(e.getMessage());
 			return null;
 		}
 		
