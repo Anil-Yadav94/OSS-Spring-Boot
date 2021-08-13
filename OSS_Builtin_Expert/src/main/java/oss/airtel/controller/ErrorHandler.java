@@ -23,7 +23,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
 	
 		@Override
 	   protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-	       String error = "Internal Server Error.";
+	       String error = "Internal Server Error...";
 	       return buildResponseEntity(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, error, ex));
 	   }
 
